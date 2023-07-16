@@ -2,9 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,13 +17,13 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
-Route::group(['prefix' => 'auth'], function() {
+Route::group(['prefix' => 'auth'], function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
