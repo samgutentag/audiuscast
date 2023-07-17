@@ -115,7 +115,7 @@ try {
             description: data.description,
             title: data.title,
             genre: Genre.PODCASTS,
-            tags: data.tags,
+            // tags: data.tags,
             releaseDate: new Date(data.date),
         },
         onProgress: (progress) => console.log("Progress:", progress),

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AudiusCast</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    @vite(['resources/js/home.js'])
+    @vite(['resources/css/app.css', 'resources/js/home.js'])
 </head>
 
 <body class="antialiased">
