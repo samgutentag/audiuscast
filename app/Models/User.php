@@ -36,8 +36,8 @@ class User extends Authenticatable
      */
     protected $casts = [];
 
-    public function podcasts()
+    public function podcast()
     {
-        return $this->hasMany(Podcast::class);
+        return $this->hasOne(Podcast::class);
     }
 }
