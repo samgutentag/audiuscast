@@ -51,7 +51,7 @@ class SyncEpisode implements ShouldQueue
         } else {
             Storage::disk('local')->put($image_path, Http::get($this->sync->image)->body());
         }
-        $command = "tsx audius.ts ";
+        $command = "npx tsx audius.ts ";
         $command.= "--user {$this->sync->podcast->user->audius_id} ";
         $command.= "--data {$data} ";
         $command.= "--audio {$absolute_audio_path} ";
