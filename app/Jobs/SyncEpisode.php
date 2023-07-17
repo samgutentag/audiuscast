@@ -30,7 +30,6 @@ class SyncEpisode implements ShouldQueue
     public function handle(): void
     {
         $episode = collect($this->sync->podcast->items)->firstWhere('guid', $this->sync->guid);
-
         $data = json_encode(json_encode([
             "description" => $episode['description'],
             "title" => $episode['title'],
@@ -38,7 +37,6 @@ class SyncEpisode implements ShouldQueue
             "date" => $episode['date'],
             "image" => $episode['image'],
         ]));
-
         $directory = "syncs/{$this->sync->id}";
         $audio_path = "{$directory}/audio.mp3";
         $absolute_audio_path = storage_path("app/{$audio_path}");
@@ -59,7 +57,7 @@ class SyncEpisode implements ShouldQueue
         $command.= "--audio {$absolute_audio_path} ";
         $command.= "--image {$absolute_image_path} ";
         Log::info($command);
-        $process = Process::timeout(10 * 60)->run($command);
+        $process = Process::timeout(600)->run($command);
         Log::info($process->output());
         if($process->successful()) {
             $this->sync->update(['status' => 'synced']);
