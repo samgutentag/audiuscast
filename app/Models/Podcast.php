@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use willvincent\Feeds\Facades\FeedsFacade;
 
 class Podcast extends Model
 {
     use HasFactory;
 
+    protected $appends = ['items'];
     protected $guarded = [];
 
     public function user()
@@ -28,45 +30,37 @@ class Podcast extends Model
         return $this->getFeedItems();
     }
 
-    public function getFeedItems($rss = false)
+    public function getFeedItems()
     {
-        $items = Cache::remember('feed-items:' . $this->id, 10, function () use ($rss) {
+        $items = Cache::remember('feed-items:' . $this->id, 60 * 60 * 24, function () {
             $entries = [];
-            try {
-                if($rss == false) {
-                    $rss = new \SimpleXMLElement(file_get_contents($this->url));
-                }
-                foreach ($rss->channel->item as $item) {
-                    $guid = $item->guid->__toString();
+            $feed = FeedsFacade::make($this->url);
+            foreach($feed->get_items() as $item) {
+                if(str_contains($item->get_enclosure()->get_type(), 'audio')) {
+                    $guid = $item->get_id();
+                    $title = $item->get_title();
                     $sync = Sync::where('guid', $guid)->first();
-                    $has_sync = $sync !== null;
-                    $is_synced = $has_sync ? $sync->is_synced : false;
-                    $is_syncing = $has_sync ? $sync->is_syncing : false;
-                    $source = ((array)$item->enclosure->attributes())['@attributes']['url'];
-                    $namespaces = $item->getNameSpaces(true);
-                    $nodes = $item->children($namespaces['itunes']);
-                    try {
-                        array_push($entries, [
-                            'title' => rtrim(ltrim($item->title->__toString())),
-                            'date' => $item->pubDate->__toString(),
-                            'image' => $rss->channel->image->url->__toString(),
-                            'description' => strip_tags(html_entity_decode(rtrim(ltrim($item->description->__toString())))),
-                            'source' => $source,
-                            'guid' => $guid,
-                            'has_sync' => $has_sync,
-                            'status' => $has_sync ? $sync->status : 'unlisted',
-                            'audius_url' => $is_synced ? $sync->audius_url : '#',
-                            'tags' => $nodes->keywords->__toString()
-                        ]);
-                    } catch (\Throwable $th) {
-                        //throw $th;
-                    }
+                    $thumbnail = $item->get_enclosure()->get_thumbnail();
+                    array_push($entries, [
+                        'title' => $title,
+                        'date' => $item->get_date(),
+                        'image' => $thumbnail ? $thumbnail : "",
+                        'description' => $item->get_description(),
+                        'tags' => $item->get_categories(),
+                        'source' => $item->get_enclosure()->get_link(),
+                        'guid' => $guid,
+                        'status' => $sync !== null ? $sync->status : 'unlisted',
+                        'audius_url' => $sync !== null ? $sync->audius_url : '#',
+                    ]);
                 }
-            } catch (\Throwable $th) {
-                //throw $th;
             }
             return $entries;
         });
         return $items;
+    }
+
+    public function getItemsAttribute()
+    {
+        return $this->getFeedItems();
     }
 }

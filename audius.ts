@@ -1,14 +1,14 @@
 import {
-  AppAuth,
-  DiscoveryNodeSelector,
-  EntityManager,
-  StorageNodeSelector,
-  UploadTrackRequest,
-  sdk,
-  stagingConfig
+    AppAuth,
+    DiscoveryNodeSelector,
+    EntityManager,
+    StorageNodeSelector,
+    UploadTrackRequest,
+    sdk,
+    stagingConfig,
 } from "@audius/sdk";
 
-import fs from 'fs';
+import fs from "fs";
 
 enum Genre {
     ALL = "All Genres",
@@ -61,58 +61,82 @@ enum Genre {
     DUBSTEP = "Dubstep",
     JERSEY_CLUB = "Jersey Club",
     VAPORWAVE = "Vaporwave",
-    MOOMBAHTON = "Moombahton"
+    MOOMBAHTON = "Moombahton",
 }
 
 const apiKey = "b6fd9c0350e052d7af5b9d2895c6481554d57999";
-const apiSecret = "9fe73bd3d003d1af23a72b8ffa32709175da78c40987b657833372822c8b3902";
+const apiSecret =
+    "9fe73bd3d003d1af23a72b8ffa32709175da78c40987b657833372822c8b3902";
+
+const userId = process.argv[3];
+const data = JSON.parse(process.argv[5]);
+const audioPath = process.argv[7];
+const imagePath = process.argv[9];
 
 const discoveryNodeSelector = new DiscoveryNodeSelector({
-  initialSelectedNode: "https://discoveryprovider.staging.audius.co/",
+    initialSelectedNode: "https://discoveryprovider.staging.audius.co/",
 });
 
 const audiusSdk = sdk({
-  appName: "AudiusCast_Staging",
-  services: {
-    discoveryNodeSelector,
-    entityManager: new EntityManager({
-      discoveryNodeSelector,
-      web3ProviderUrl: stagingConfig.web3ProviderUrl,
-      contractAddress: stagingConfig.entityManagerContractAddress,
-      identityServiceUrl: stagingConfig.identityServiceUrl,
-    }),
-    storageNodeSelector: new StorageNodeSelector({
-      discoveryNodeSelector,
-      auth: new AppAuth(apiKey, apiSecret),
-      bootstrapNodes: [
-        {
-          delegateOwnerWallet: "0x671ddce7B4E676C9467F87e4031a917b5D6f75F0",
-          endpoint: "https://usermetadata.staging.audius.co",
-        },
-      ],
-    }),
-  },
-  apiKey: apiKey,
-  apiSecret: apiSecret,
+    appName: "AudiusCast_Staging",
+    services: {
+        discoveryNodeSelector,
+        entityManager: new EntityManager({
+            discoveryNodeSelector,
+            web3ProviderUrl: stagingConfig.web3ProviderUrl,
+            contractAddress: stagingConfig.entityManagerContractAddress,
+            identityServiceUrl: stagingConfig.identityServiceUrl,
+        }),
+        storageNodeSelector: new StorageNodeSelector({
+            discoveryNodeSelector,
+            auth: new AppAuth(apiKey, apiSecret),
+            bootstrapNodes: [
+                {
+                    delegateOwnerWallet:
+                        "0x671ddce7B4E676C9467F87e4031a917b5D6f75F0",
+                    endpoint: "https://usermetadata.staging.audius.co",
+                },
+            ],
+        }),
+    },
+    apiKey: apiKey,
+    apiSecret: apiSecret,
 });
 
 try {
+    console.log(data.tags);
     const uploadTrackRequest: UploadTrackRequest = {
-      userId: '6o8Jw3',
-      coverArtFile: {
-        buffer: fs.readFileSync('cover.jpg'),
-        name: 'my cover art'
-      },
-      metadata: { title: 'Run With Me', genre: Genre.ELECTRONIC },
-      onProgress: (progress) => console.log("Progress:", progress),
-      trackFile: {
-        buffer: fs.readFileSync('run.mp3'),
-        name: 'my track file'
-      },
+        userId: userId,
+        coverArtFile: {
+            buffer: fs.readFileSync(imagePath),
+            name: "my cover art",
+        },
+        metadata: {
+            description: data.description,
+            title: data.title,
+            genre: Genre.PODCASTS,
+            tags: data.tags,
+            releaseDate: new Date(data.date),
+        },
+        onProgress: (progress) => console.log("Progress:", progress),
+        trackFile: {
+            buffer: fs.readFileSync(audioPath),
+            name: "my track file",
+        },
     };
-    console.log(uploadTrackRequest)
     const result = await audiusSdk.tracks.uploadTrack(uploadTrackRequest);
-    console.log(result)
-  } catch (error) {
-    console.log(error)
-  }
+    const trackId = result.trackId;
+
+    console.log("Track ID:", trackId);
+
+    // const track = await audiusSdk.tracks.getTrack({
+    //     trackId: trackId.toString(),
+    // });
+
+    // console.log(track);
+
+    process.exit(0);
+} catch (error) {
+    console.log(error);
+    process.exit(1);
+}

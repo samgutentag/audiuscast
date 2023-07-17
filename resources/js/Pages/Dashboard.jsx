@@ -1,52 +1,12 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 
 import { ArrowRightIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
-
-const projects = [
-    {
-        id: 1,
-        title: "GraphQL API",
-        initials: "GA",
-        team: "Engineering",
-        members: [
-            {
-                name: "Dries Vincent",
-                handle: "driesvincent",
-                imageUrl:
-                    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-            },
-            {
-                name: "Lindsay Walton",
-                handle: "lindsaywalton",
-                imageUrl:
-                    "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-            },
-            {
-                name: "Courtney Henry",
-                handle: "courtneyhenry",
-                imageUrl:
-                    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-            },
-            {
-                name: "Tom Cook",
-                handle: "tomcook",
-                imageUrl:
-                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-            },
-        ],
-        totalMembers: 12,
-        lastUpdated: "March 17, 2020",
-        pinned: true,
-        bgColorClass: "bg-pink-600",
-    },
-    // More projects...
-];
 
 export default function Dashboard({ auth, podcast }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -57,7 +17,23 @@ export default function Dashboard({ auth, podcast }) {
         e.preventDefault();
         post("/podcasts");
     }
-    console.log(podcast);
+    function refreshFeed(e) {
+        e.preventDefault();
+        post("/podcasts/refresh");
+    }
+    function syncAll(e) {
+        e.preventDefault();
+        router.post("/syncs/all");
+    }
+    function syncEpisode(episode) {
+        router.post("/syncs", {
+            podcast_id: podcast.id,
+            title: episode.title,
+            source: episode.source,
+            image: episode.image,
+            guid: episode.guid,
+        });
+    }
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -86,7 +62,9 @@ export default function Dashboard({ auth, podcast }) {
                                                 episodes with Audius.
                                             </p>
                                             <form
-                                                onSubmit={submitFeedForm}
+                                                onSubmit={(e) =>
+                                                    submitFeedForm(e)
+                                                }
                                                 className="mt-10 flex items-center justify-center gap-x-4"
                                             >
                                                 <input
@@ -128,22 +106,20 @@ export default function Dashboard({ auth, podcast }) {
                                     </h1>
                                 </div>
                                 <div className="mt-4 flex sm:ml-4 sm:mt-0">
-                                    {/* <button
+                                    <button
+                                        onClick={(e) => refreshFeed(e)}
                                         type="button"
                                         className="sm:order-0 order-1 ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:ml-0"
                                     >
-                                        Share
-                                    </button> */}
-                                    <a
-                                        href={
-                                            "https://staging.audius.co/" +
-                                            auth.user.audius_handle
-                                        }
+                                        Refresh
+                                    </button>
+                                    <button
+                                        onClick={(e) => syncAll(e)}
                                         target="_blank"
                                         className="order-0 inline-flex items-center rounded-md bg-audius-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-audius-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-audius-600 sm:order-1 sm:ml-3"
                                     >
-                                        Listen
-                                    </a>
+                                        Sync All
+                                    </button>
                                 </div>
                             </div>
 
@@ -238,12 +214,28 @@ export default function Dashboard({ auth, podcast }) {
                                                         {episode.status}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
-                                                        {!episode.has_sync && (
-                                                            <a
-                                                                href="#"
+                                                        {episode.status ==
+                                                            "unlisted" && (
+                                                            <button
+                                                                onClick={() =>
+                                                                    syncEpisode(
+                                                                        episode
+                                                                    )
+                                                                }
                                                                 className="text-audius-600 hover:text-audius-900"
                                                             >
                                                                 Sync to Audius
+                                                            </button>
+                                                        )}
+                                                        {episode.status ==
+                                                            "synced" && (
+                                                            <a
+                                                                href={
+                                                                    episode.audius_url
+                                                                }
+                                                                className="text-audius-600 hover:text-audius-900"
+                                                            >
+                                                                Listen on Audius
                                                             </a>
                                                         )}
                                                     </td>

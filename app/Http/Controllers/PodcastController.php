@@ -7,29 +7,26 @@ use App\Models\Sync;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\SyncEpisode;
+use willvincent\Feeds\Facades\FeedsFacade;
 
 class PodcastController extends Controller
 {
     public function store(Request $request)
     {
-        $url = $request->url;
-        $rss = new \SimpleXMLElement(file_get_contents($url));
+        $feed = FeedsFacade::make($request->url);
+
         $payload = [
             'user_id' => Auth::user()->id,
-            'description' => $rss->channel->description->__toString(),
-            'name' => rtrim(ltrim($rss->channel->title->__toString())),
-            'url' => $url,
+            'description' => $feed->get_description(),
+            'name' => $feed->get_title(),
+            'url' => $request->url,
             'auto_sync' => true
         ];
         $podcast = Podcast::create($payload);
-        $payload['items'] = $podcast->getFeedItems($rss);
-        $item = $payload['items'][0];
-        // $metadata = [
-        //     'releaseDate' => $item['date'],
-        //     'description' => $item['description'],
-        //     'title' => $item['title'],
-        //     'tags' =>  $item['tags']
-        // ];
+        $items = $podcast->getFeedItems();
+        $item = $items[0];
+
         $sync = Sync::create([
             'user_id' => Auth::user()->id,
             'podcast_id' => $podcast->id,
@@ -39,10 +36,11 @@ class PodcastController extends Controller
             'guid' => $item['guid'],
             'status' => 'queued'
         ]);
-        // Log::info('dispatching ' . $item['title']);
-        // dispatch(new SyncTrack($sync, $item['source'], $metadata, Auth::user()));
-        // $sync->feed->getFreshFeedItems();
-        // $payload['items'] = $podcast->getFeedItems();
+        $sync->podcast->getFreshFeedItems();
+
+        Log::info('dispatching ' . $item['title']);
+        dispatch(new SyncEpisode($sync));
+
         return to_route('dashboard');
     }
 
@@ -57,5 +55,12 @@ class PodcastController extends Controller
         $podcast = Podcast::find($id);
         $podcast['items'] = $podcast->getFeedItems();
         return response()->json($podcast);
+    }
+
+    public function refresh(Request $request)
+    {
+        $podcast = Auth::user()->podcast;
+        $podcast->getFreshFeedItems();
+        return to_route('dashboard');
     }
 }
