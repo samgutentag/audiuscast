@@ -36,7 +36,7 @@ audiusSdk.oauth.init({
                 audius_id: res.userId,
             })
             .then((response) => {
-                window.location.href = "/dashboard";
+                window.location.reload();
             });
     },
     env: "staging",

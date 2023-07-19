@@ -6,9 +6,12 @@ use App\Http\Controllers\PodcastController;
 use App\Http\Controllers\SyncController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('home');
+});
+
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
