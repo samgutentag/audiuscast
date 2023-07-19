@@ -20,6 +20,7 @@ return new class () extends Migration {
             $table->text('source');
             $table->string('audius_url')->nullable();
             $table->enum('status', ['queued', 'syncing', 'synced', 'failed'])->default('queued');
+            $table->boolean('automated')->default(false);
             $table->timestamp('synced_at')->useCurrent();
             $table->timestamps();
         });

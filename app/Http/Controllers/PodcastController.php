@@ -38,23 +38,9 @@ class PodcastController extends Controller
         ]);
         $sync->podcast->getFreshFeedItems();
 
-        Log::info('dispatching ' . $item['title']);
         dispatch(new SyncEpisode($sync));
 
         return to_route('dashboard');
-    }
-
-    public function update(Request $request, $id)
-    {
-        if(!$user = Auth::user()) {
-            return response()->json('unauthorized', 401);
-        }
-        $podcast = Podcast::find($id);
-        $podcast->auto_sync = $request->auto_sync;
-        $podcast->save();
-        $podcast = Podcast::find($id);
-        $podcast['items'] = $podcast->getFeedItems();
-        return response()->json($podcast);
     }
 
     public function refresh(Request $request)

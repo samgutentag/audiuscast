@@ -19,10 +19,10 @@ class SyncController extends Controller
             'image' => $request->image,
             'source' => $request->source,
             'guid' => $request->guid,
-            'status' => 'queued'
+            'status' => 'queued',
+            'automated' => false
         ]);
 
-        Log::info('dispatching ' . $request->title);
         dispatch(new SyncEpisode($sync));
 
         $sync->podcast->getFreshFeedItems();
@@ -44,7 +44,8 @@ class SyncController extends Controller
                     'image' => $episode['image'],
                     'source' => $episode['source'],
                     'guid' => $episode['guid'],
-                    'status' => 'queued'
+                    'status' => 'queued',
+                    'automated' => true
                 ]);
                 dispatch(new SyncEpisode($sync));
             }

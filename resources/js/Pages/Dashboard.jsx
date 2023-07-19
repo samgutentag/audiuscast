@@ -8,7 +8,7 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
 
-export default function Dashboard({ auth, podcast }) {
+export default function Dashboard({ auth, podcast, syncs }) {
     const { data, setData, post, processing, errors } = useForm({
         url: "",
     });
@@ -250,8 +250,48 @@ export default function Dashboard({ auth, podcast }) {
                 </div>
             </main>
 
-            <aside className="fixed top-0 inset-y-0 right-0 hidden w-72 overflow-y-auto border-l border-gray-200 px-4 py-6 sm:px-6 lg:px-8 xl:block">
-                {/* Secondary column (hidden on smaller screens) */}
+            <aside className="fixed top-0 inset-y-0 right-0 hidden w-72 overflow-y-auto border-l border-gray-200 px-4 py-6 sm:px-6 xl:block">
+                <div className="pb-2 ">
+                    <h2 className="text-sm font-semibold">Recent Activity</h2>
+                </div>
+                <div>
+                    <ul role="list" className="divide-y divide-gray-200">
+                        {syncs.map((item) => {
+                            return (
+                                item.status == "synced" && (
+                                    <li key={item.id} className="py-4">
+                                        <div className="flex space-x-3">
+                                            <div className="flex-1 space-y-1">
+                                                <div className="flex items-center justify-between">
+                                                    <h3 className="text-sm font-medium">
+                                                        {item.automated && (
+                                                            <span>
+                                                                AudiusCast
+                                                            </span>
+                                                        )}
+                                                        {!item.automated && (
+                                                            <span>You</span>
+                                                        )}
+                                                    </h3>
+                                                    <p className="text-sm text-gray-500">
+                                                        {item.created_at}
+                                                    </p>
+                                                </div>
+                                                <p className="text-sm text-gray-500">
+                                                    Uploaded{" "}
+                                                    <span className="font-medium text-gray-900">
+                                                        {item.title}
+                                                    </span>{" "}
+                                                    to Audius
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                )
+                            );
+                        })}
+                    </ul>
+                </div>
             </aside>
         </AuthenticatedLayout>
     );
