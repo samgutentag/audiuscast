@@ -64,6 +64,7 @@ class SyncEpisode implements ShouldQueue
             $this->sync->podcast->getFreshFeedItems();
         }
         if($process->failed()) {
+            Log::error($process->errorOutput());
             $this->sync->update(['status' => 'failed']);
             $this->sync->podcast->getFreshFeedItems();
             $this->fail();
