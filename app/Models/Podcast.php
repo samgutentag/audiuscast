@@ -41,12 +41,13 @@ class Podcast extends Model
                     $title = $item->get_title();
                     $sync = Sync::where('guid', $guid)->first();
                     $thumbnail = $item->get_enclosure()->get_thumbnail();
+
                     array_push($entries, [
                         'title' => $title,
                         'date' => $item->get_date(),
                         'image' => $thumbnail ? $thumbnail : "",
                         'description' => $item->get_description(),
-                        'tags' => $item->get_categories(),
+                        'tags' => $item->get_categories() ? $item->get_categories() : [],
                         'source' => $item->get_enclosure()->get_link(),
                         'guid' => $guid,
                         'status' => $sync !== null ? $sync->status : 'unlisted',
