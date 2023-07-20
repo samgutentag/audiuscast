@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
@@ -56,7 +57,10 @@ class SyncEpisode implements ShouldQueue
         $command.= "--user {$this->sync->podcast->user->audius_id} ";
         $command.= "--data {$data} ";
         $command.= "--audio {$absolute_audio_path} ";
-        $command.= "--image {$absolute_image_path} ";
+        if(File::exists($absolute_image_path)) {
+            $command.= "--image {$absolute_image_path} ";
+        }
+
         Log::info($command);
         $process = Process::timeout(600)->run($command);
         Log::info($process->output());

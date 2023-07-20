@@ -108,7 +108,9 @@ try {
     const uploadTrackRequest: UploadTrackRequest = {
         userId: userId,
         coverArtFile: {
-            buffer: fs.readFileSync(imagePath),
+            buffer: imagePath
+                ? fs.readFileSync(imagePath)
+                : fs.readFileSync("cover.jpg"),
             name: "my cover art",
         },
         metadata: {
