@@ -32,7 +32,7 @@ class SyncEpisode implements ShouldQueue
     {
         $episode = collect($this->sync->podcast->items)->firstWhere('guid', $this->sync->guid);
         $data = json_encode(json_encode([
-            "description" => $episode['description'],
+            "description" =>  preg_replace("/\n\s+/", "\n", rtrim(html_entity_decode(strip_tags($episode['description'])))),
             "title" => $episode['title'],
             "tags" => implode(',', $episode['tags']),
             "date" => $episode['date'],
