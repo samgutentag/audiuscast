@@ -9,6 +9,7 @@ import {
 } from "@audius/sdk";
 
 import fs from "fs";
+import path from "path";
 
 enum Genre {
     ALL = "All Genres",
@@ -110,7 +111,7 @@ try {
         coverArtFile: {
             buffer: imagePath
                 ? fs.readFileSync(imagePath)
-                : fs.readFileSync("cover.jpg"),
+                : fs.readFileSync(path.resolve(__dirname, "default.jpg")),
             name: "my cover art",
         },
         metadata: {
