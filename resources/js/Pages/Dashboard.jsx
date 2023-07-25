@@ -214,8 +214,12 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                                         {episode.status}
                                                     </td>
                                                     <td className="whitespace-nowrap px-6 py-3 text-right text-sm font-medium">
-                                                        {episode.status ==
-                                                            "unlisted" && (
+                                                        {[
+                                                            "unlisted",
+                                                            "failed",
+                                                        ].includes(
+                                                            episode.status
+                                                        ) && (
                                                             <button
                                                                 onClick={() =>
                                                                     syncEpisode(
