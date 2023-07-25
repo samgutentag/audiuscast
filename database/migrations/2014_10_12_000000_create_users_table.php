@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->string('audius_id')->unique();
             $table->string('audius_handle')->unique();
             $table->string('email')->unique();
+            $table->string('avatar_url')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

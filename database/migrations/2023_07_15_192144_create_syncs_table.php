@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('podcast_id')->refereences('id')->on('podcasts')->onDelete('cascade');
-            $table->string('guid')->unique();
+            $table->string('guid');
             $table->text('title');
             $table->text('image')->nullable();
             $table->text('source');

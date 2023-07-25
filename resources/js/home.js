@@ -28,15 +28,16 @@ const audiusSdk = sdk({
 
 audiusSdk.oauth.init({
     successCallback: (res) => {
-        console.log("Log in success!", res);
+        console.log("Log in success!", res.profilePicture);
         window.axios
             .post("/auth/login", {
                 email: res.email,
                 audius_handle: res.handle,
                 audius_id: res.userId,
+                avatar_url: res.profilePicture["_1000x1000"],
             })
             .then((response) => {
-                window.location.reload();
+                window.location.href = "/dashboard";
             });
     },
     env: "staging",

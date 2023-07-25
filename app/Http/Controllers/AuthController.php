@@ -10,12 +10,13 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        if(!Auth::check()){
-            if(!$user = User::where('audius_id', $request->audius_id)->first()){
+        if(!Auth::check()) {
+            if(!$user = User::where('audius_id', $request->audius_id)->first()) {
                 $user = User::create([
                     'audius_id' => $request->audius_id,
                     'audius_handle' => $request->audius_handle,
-                    'email' => $request->email
+                    'email' => $request->email,
+                    'avatar_url' => $request->avatar_url
                 ]);
                 return response()->json([
                     'user' => $user
@@ -28,7 +29,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout() 
+    public function logout()
     {
         Auth::logout();
         session()->invalidate();
