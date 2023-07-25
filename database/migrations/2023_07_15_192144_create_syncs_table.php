@@ -2,7 +2,10 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 return new class () extends Migration {
     /**
@@ -10,6 +13,8 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Process::run('rm -rf ' . base_path('storage/app/syncs'));
+
         Schema::create('syncs', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');

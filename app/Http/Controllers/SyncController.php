@@ -12,16 +12,22 @@ class SyncController extends Controller
 {
     public function store(Request $request)
     {
-        $sync = Sync::create([
-            'user_id' => Auth::user()->id,
-            'podcast_id' => $request->podcast_id,
-            'title' => $request->title,
-            'image' => $request->image,
-            'source' => $request->source,
-            'guid' => $request->guid,
-            'status' => 'queued',
-            'automated' => false
-        ]);
+        if($request->has('retry')) {
+            $sync = Sync::where('guid', $request->guid)->where('user_id', Auth::user()->id)->first();
+            $sync->status = 'queued';
+            $sync->save();
+        } else {
+            $sync = Sync::create([
+                'user_id' => Auth::user()->id,
+                'podcast_id' => $request->podcast_id,
+                'title' => $request->title,
+                'image' => $request->image,
+                'source' => $request->source,
+                'guid' => $request->guid,
+                'status' => 'queued',
+                'automated' => false
+            ]);
+        }
 
         dispatch(new SyncEpisode($sync));
 
@@ -35,7 +41,7 @@ class SyncController extends Controller
         $podcast = Auth::user()->podcast;
         $episodes = $podcast->items;
         foreach($episodes as $episode) {
-            $sync = Sync::where('guid', $episode['guid'])->first();
+            $sync = Sync::where('guid', $episode['guid'])->where('user_id', Auth::user()->id)->first();
             if(!$sync) {
                 $sync = Sync::create([
                     'user_id' => Auth::user()->id,

@@ -25,14 +25,18 @@ export default function Dashboard({ auth, podcast, syncs }) {
         e.preventDefault();
         router.post("/syncs/all");
     }
-    function syncEpisode(episode) {
-        router.post("/syncs", {
+    function syncEpisode(episode, retry = false) {
+        let payload = {
             podcast_id: podcast.id,
             title: episode.title,
             source: episode.source,
             image: episode.image,
             guid: episode.guid,
-        });
+        };
+        if (retry) {
+            payload.retry = true;
+        }
+        router.post("/syncs", payload);
     }
     return (
         <AuthenticatedLayout
@@ -223,7 +227,9 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                                             <button
                                                                 onClick={() =>
                                                                     syncEpisode(
-                                                                        episode
+                                                                        episode,
+                                                                        episode.status ==
+                                                                            "failed"
                                                                     )
                                                                 }
                                                                 className="text-audius-600 hover:text-audius-900"

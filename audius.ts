@@ -111,7 +111,7 @@ try {
         coverArtFile: {
             buffer: imagePath
                 ? fs.readFileSync(imagePath)
-                : fs.readFileSync(path.resolve(__dirname, "default.jpg")),
+                : fs.readFileSync(path.resolve("./default.jpg")),
             name: "my cover art",
         },
         metadata: {
