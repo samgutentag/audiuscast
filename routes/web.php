@@ -19,6 +19,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/podcasts/refresh', [PodcastController::class, 'refresh'])->name('podcast.refresh');
     Route::post('/syncs', [SyncController::class, 'store'])->name('sync.store');
     Route::post('/syncs/all', [SyncController::class, 'all'])->name('sync.all');
+    Route::delete('/podcasts', [PodcastController::class, 'destroy'])->name('podcast.destroy');
 });
 
 Route::group(['prefix' => 'auth'], function () {

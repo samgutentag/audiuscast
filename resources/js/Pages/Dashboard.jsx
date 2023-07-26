@@ -1,11 +1,63 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 import { router, useForm } from "@inertiajs/react";
+import { Fragment } from "react";
 
-import { ArrowRightIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import {
+    ArrowRightIcon,
+    ChevronRightIcon,
+    Cog8ToothIcon,
+} from "@heroicons/react/20/solid";
+import { Menu, Transition } from "@headlessui/react";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
+}
+
+function DeleteInactiveIcon(props) {
+    return (
+        <svg
+            {...props}
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <rect
+                x="5"
+                y="6"
+                width="10"
+                height="10"
+                fill="#EDE9FE"
+                stroke="#A78BFA"
+                strokeWidth="2"
+            />
+            <path d="M3 6H17" stroke="#A78BFA" strokeWidth="2" />
+            <path d="M8 6V4H12V6" stroke="#A78BFA" strokeWidth="2" />
+        </svg>
+    );
+}
+
+function DeleteActiveIcon(props) {
+    return (
+        <svg
+            {...props}
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <rect
+                x="5"
+                y="6"
+                width="10"
+                height="10"
+                fill="#8B5CF6"
+                stroke="#C4B5FD"
+                strokeWidth="2"
+            />
+            <path d="M3 6H17" stroke="#C4B5FD" strokeWidth="2" />
+            <path d="M8 6V4H12V6" stroke="#C4B5FD" strokeWidth="2" />
+        </svg>
+    );
 }
 
 export default function Dashboard({ auth, podcast, syncs }) {
@@ -24,6 +76,10 @@ export default function Dashboard({ auth, podcast, syncs }) {
     function syncAll(e) {
         e.preventDefault();
         router.post("/syncs/all");
+    }
+    function deletePodcast(e) {
+        e.preventDefault();
+        router.delete(`/podcasts/`);
     }
     function syncEpisode(episode, retry = false) {
         let payload = {
@@ -109,11 +165,63 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                         {podcast.name}
                                     </h1>
                                 </div>
-                                <div className="mt-4 flex sm:ml-4 sm:mt-0">
+                                <div className="mt-4 flex items-center sm:ml-4 sm:mt-0">
+                                    <Menu
+                                        as="div"
+                                        className="relative inline-block text-left"
+                                    >
+                                        <Menu.Button>
+                                            <Cog8ToothIcon className="mt-2 h-5 w-5 text-gray-400" />
+                                        </Menu.Button>
+                                        <Transition
+                                            as={Fragment}
+                                            enter="transition ease-out duration-100"
+                                            enterFrom="transform opacity-0 scale-95"
+                                            enterTo="transform opacity-100 scale-100"
+                                            leave="transition ease-in duration-75"
+                                            leaveFrom="transform opacity-100 scale-100"
+                                            leaveTo="transform opacity-0 scale-95"
+                                        >
+                                            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                <div className="px-1 py-1 "></div>
+                                                <div className="px-1 py-1">
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <button
+                                                                onClick={(e) =>
+                                                                    deletePodcast(
+                                                                        e
+                                                                    )
+                                                                }
+                                                                className={`${
+                                                                    active
+                                                                        ? "bg-audius-500 text-white"
+                                                                        : "text-gray-900"
+                                                                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                                            >
+                                                                {active ? (
+                                                                    <DeleteActiveIcon
+                                                                        className="mr-2 h-5 w-5 text-audius-400"
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                ) : (
+                                                                    <DeleteInactiveIcon
+                                                                        className="mr-2 h-5 w-5 text-audius-400"
+                                                                        aria-hidden="true"
+                                                                    />
+                                                                )}
+                                                                Delete Podcast
+                                                            </button>
+                                                        )}
+                                                    </Menu.Item>
+                                                </div>
+                                            </Menu.Items>
+                                        </Transition>
+                                    </Menu>
                                     <button
                                         onClick={(e) => refreshFeed(e)}
                                         type="button"
-                                        className="sm:order-0 order-1 ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:ml-0"
+                                        className="sm:order-0 order-1 ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                     >
                                         Refresh
                                     </button>

@@ -49,4 +49,12 @@ class PodcastController extends Controller
         $podcast->getFreshFeedItems();
         return to_route('dashboard');
     }
+
+    public function destroy(Request $request)
+    {
+        $podcast = Auth::user()->podcast;
+        $podcast->syncs()->delete();
+        $podcast->delete();
+        return to_route('dashboard');
+    }
 }

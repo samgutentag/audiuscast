@@ -1,26 +1,16 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import {
-    Cog6ToothIcon,
-    SignalIcon,
-    XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { SignalIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/20/solid";
 
 const navigation = [
     { name: "Podcast", href: "#", icon: SignalIcon, current: true },
-    { name: "Settings", href: "#", icon: Cog6ToothIcon, current: false },
-];
-const teams = [
-    { id: 1, name: "Planetaria", href: "#", initial: "P", current: false },
-    { id: 2, name: "Protocol", href: "#", initial: "P", current: false },
-    { id: 3, name: "Tailwind Labs", href: "#", initial: "T", current: false },
 ];
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
 }
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({ user, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
