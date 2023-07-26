@@ -16,6 +16,7 @@ Route::group(['middleware' => 'guest'], function () {
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/podcasts', [PodcastController::class, 'store'])->name('podcast.store');
+    Route::put('/podcasts', [PodcastController::class, 'update'])->name('podcast.update');
     Route::post('/podcasts/refresh', [PodcastController::class, 'refresh'])->name('podcast.refresh');
     Route::post('/syncs', [SyncController::class, 'store'])->name('sync.store');
     Route::post('/syncs/all', [SyncController::class, 'all'])->name('sync.all');

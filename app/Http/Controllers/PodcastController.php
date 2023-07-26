@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SyncEpisode;
+use Carbon\Carbon;
 use willvincent\Feeds\Facades\FeedsFacade;
 
 class PodcastController extends Controller
@@ -18,7 +19,7 @@ class PodcastController extends Controller
 
         $payload = [
             'user_id' => Auth::user()->id,
-            'description' => $feed->get_description(),
+            'description' => strip_tags($feed->get_description()),
             'name' => $feed->get_title(),
             'url' => $request->url,
             'auto_sync' => true
@@ -26,6 +27,9 @@ class PodcastController extends Controller
         $podcast = Podcast::create($payload);
         $items = $podcast->getFeedItems();
         $item = $items[0];
+
+        $podcast->initial_sync_date = Carbon::parse($item['date']);
+        $podcast->save();
 
         $sync = Sync::create([
             'user_id' => Auth::user()->id,
@@ -50,10 +54,16 @@ class PodcastController extends Controller
         return to_route('dashboard');
     }
 
+    public function update(Request $request)
+    {
+        $podcast = Auth::user()->podcast;
+        $podcast->update($request->all());
+        return to_route('dashboard');
+    }
+
     public function destroy(Request $request)
     {
         $podcast = Auth::user()->podcast;
-        $podcast->syncs()->delete();
         $podcast->delete();
         return to_route('dashboard');
     }

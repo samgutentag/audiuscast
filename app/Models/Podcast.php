@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -39,14 +40,14 @@ class Podcast extends Model
                 if(str_contains($item->get_enclosure()->get_type(), 'audio')) {
                     $guid = $item->get_id();
                     $title = $item->get_title();
-                    $sync = Sync::where('guid', $guid)->first();
+                    $sync = Sync::where('guid', $guid)->where('user_id', $this->user->id)->first();
                     $thumbnail = $item->get_enclosure()->get_thumbnail();
 
                     array_push($entries, [
                         'title' => $title,
                         'date' => $item->get_date(),
                         'image' => $thumbnail ? $thumbnail : "",
-                        'description' => $item->get_description(),
+                        'description' => strip_tags($item->get_description()),
                         'tags' => $item->get_categories() ? $item->get_categories() : [],
                         'source' => $item->get_enclosure()->get_link(),
                         'guid' => $guid,

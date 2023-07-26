@@ -8,7 +8,7 @@ import {
     ChevronRightIcon,
     Cog8ToothIcon,
 } from "@heroicons/react/20/solid";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Transition, Switch } from "@headlessui/react";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -80,6 +80,10 @@ export default function Dashboard({ auth, podcast, syncs }) {
     function deletePodcast(e) {
         e.preventDefault();
         router.delete(`/podcasts/`);
+    }
+    function setAutoSync(e) {
+        podcast.auto_sync = e;
+        router.put(`/podcasts/`, { auto_sync: e });
     }
     function syncEpisode(episode, retry = false) {
         let payload = {
@@ -182,8 +186,49 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                             leaveFrom="transform opacity-100 scale-100"
                                             leaveTo="transform opacity-0 scale-95"
                                         >
-                                            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <div className="px-1 py-1 "></div>
+                                            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-xl ring-1 ring-black ring-opacity-10 focus:outline-none">
+                                                <div className="px-1 py-1 ">
+                                                    <div className="px-2 py-2 flex items-center justify-between">
+                                                        <Switch.Group>
+                                                            <Switch.Label className="mr-4">
+                                                                <p className="text-sm text-gray-900">
+                                                                    Auto Sync
+                                                                </p>
+                                                            </Switch.Label>
+                                                            <Switch
+                                                                checked={
+                                                                    podcast.auto_sync
+                                                                }
+                                                                onChange={(
+                                                                    e
+                                                                ) => {
+                                                                    setAutoSync(
+                                                                        e
+                                                                    );
+                                                                }}
+                                                                className={`${
+                                                                    podcast.auto_sync
+                                                                        ? "bg-audius-600"
+                                                                        : "bg-audius-200"
+                                                                }
+          relative inline-flex h-[28px] w-[64px] shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+                                                            >
+                                                                <span className="sr-only">
+                                                                    Use setting
+                                                                </span>
+                                                                <span
+                                                                    aria-hidden="true"
+                                                                    className={`${
+                                                                        podcast.auto_sync
+                                                                            ? "translate-x-9"
+                                                                            : "translate-x-0"
+                                                                    }
+            pointer-events-none inline-block h-[24px] w-[23px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+                                                                />
+                                                            </Switch>
+                                                        </Switch.Group>
+                                                    </div>
+                                                </div>
                                                 <div className="px-1 py-1">
                                                     <Menu.Item>
                                                         {({ active }) => (

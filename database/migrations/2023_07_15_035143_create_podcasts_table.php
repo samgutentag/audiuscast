@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->text('description');
             $table->string('url');
             $table->timestamp('synced_at')->useCurrent();
+            $table->timestamp('initial_sync_date')->nullable();
             $table->timestamps();
         });
     }
