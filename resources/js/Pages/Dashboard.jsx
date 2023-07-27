@@ -397,6 +397,7 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                                         {episode.status ==
                                                             "synced" && (
                                                             <a
+                                                                target="_blank"
                                                                 href={
                                                                     episode.audius_url
                                                                 }

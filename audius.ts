@@ -128,13 +128,12 @@ try {
         },
     };
     const result = await audiusSdk.tracks.uploadTrack(uploadTrackRequest);
-    const trackId = result.trackId;
 
-    // const track = await audiusSdk.tracks.getTrack({
-    //     trackId: trackId.toString(),
-    // });
+    const track = await audiusSdk.tracks.getTrack({
+        trackId: result.trackId.toString(),
+    });
 
-    // console.log(track);
+    console.log(track.data?.permalink);
 
     process.exit(0);
 } catch (error) {

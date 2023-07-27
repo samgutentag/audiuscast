@@ -65,7 +65,7 @@ class SyncEpisode implements ShouldQueue
         $process = Process::timeout(600)->run($command);
         Log::info($process->output());
         if($process->successful()) {
-            $this->sync->update(['status' => 'synced']);
+            $this->sync->update(['status' => 'synced', 'audius_url' => $process->output()]);
             $this->sync->podcast->getFreshFeedItems();
         }
         if($process->failed()) {

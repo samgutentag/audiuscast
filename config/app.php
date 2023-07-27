@@ -59,6 +59,8 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    'audius_url' => env('AUDIUS_URL'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
