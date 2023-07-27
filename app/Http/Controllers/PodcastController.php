@@ -15,17 +15,25 @@ class PodcastController extends Controller
 {
     public function store(Request $request)
     {
-        $feed = FeedsFacade::make($request->url);
-
+        try {
+            $feed = FeedsFacade::make($request->url);
+        } catch (\Throwable $th) {
+            return back()->withErrors(['url' => 'This podcast feed is invalid.']);
+        }
         $payload = [
             'user_id' => Auth::user()->id,
             'description' => strip_tags($feed->get_description()),
             'name' => $feed->get_title(),
-            'url' => $request->url,
-            'auto_sync' => true
+            'url' => $request->url
         ];
         $podcast = Podcast::create($payload);
         $items = $podcast->getFeedItems();
+
+        if(count($items) == 0) {
+            $podcast->delete();
+            return back()->withErrors(['url' => 'This podcast feed has no audio episodes.']);
+        }
+
         $item = $items[0];
 
         $podcast->initial_sync_date = Carbon::parse($item['date']);
