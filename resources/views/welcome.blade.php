@@ -20,17 +20,6 @@
                         <span class="font-bold inline-block text-2xl">AudiusCast</span>
                     </a>
                 </div>
-                <div class="flex lg:hidden">
-                    <button type="button"
-                        class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
-                        <span class="sr-only">Open main menu</span>
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                            aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
-                        </svg>
-                    </button>
-                </div>
 
                 <div class="flex flex-1 justify-end">
                     <div id="audius-login-button"></div>
@@ -65,7 +54,7 @@
                         podcast's RSS feed and watching the tracks upload automatically</p>
                     <div class="mt-10 flex items-center gap-x-6">
                         <a href="#"
-                            class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get
+                            class="rounded-md bg-audius-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-audius-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-audius-600">Get
                             started</a>
                         <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span
                                 aria-hidden="true">→</span></a>
@@ -87,7 +76,7 @@
                         </path>
                         <foreignObject width="316" height="684" transform="translate(24 24)"
                             clip-path="url(#2ade4387-9c63-4fc4-b754-10e687a0d332)">
-
+                            <img src="/mobile.png" alt="">
                         </foreignObject>
                     </svg>
                 </div>

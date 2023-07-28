@@ -211,16 +211,16 @@ export default function Authenticated({ user, children }) {
                 </div>
 
                 <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
-                    <button
-                        type="button"
-                        className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
-                        onClick={() => setSidebarOpen(true)}
-                    >
-                        <span className="sr-only">Open sidebar</span>
-                        <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                    <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">
-                        Dashboard
+                    <div className="flex-1 ">
+                        <div className="-m-1.5 p-1.5 flex items-center">
+                            <img
+                                src="https://thegivingblock.com/wp-content/uploads/2021/11/AudiusCoinLogo_2x.png"
+                                className="h-8 mr-2"
+                            />
+                            <span className="font-bold inline-block text-xl">
+                                AudiusCast
+                            </span>
+                        </div>
                     </div>
                     <a href="#">
                         <span className="sr-only">Your profile</span>
