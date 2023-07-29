@@ -322,14 +322,14 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                                                 )}
                                                                 aria-hidden="true"
                                                             />
-                                                            <a
+                                                            <p
                                                                 href={
                                                                     episode.audius_url
                                                                 }
                                                                 className="truncate hover:text-gray-600"
                                                             >
                                                                 {episode.title}
-                                                            </a>
+                                                            </p>
                                                         </div>
                                                     </td>
                                                     <td className="hidden capitalize whitespace-nowrap px-6 py-3 text-right text-sm text-gray-500 md:table-cell">
@@ -403,7 +403,7 @@ export default function Dashboard({ auth, podcast, syncs }) {
                                                         )}
                                                     </h3>
                                                     <p className="text-sm text-gray-500">
-                                                        {item.created_at}
+                                                        {item.synced_at}
                                                     </p>
                                                 </div>
                                                 <p className="text-sm text-gray-500">
