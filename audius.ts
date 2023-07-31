@@ -105,7 +105,6 @@ const audiusSdk = sdk({
 });
 
 try {
-    console.log(data.tags);
     const uploadTrackRequest: UploadTrackRequest = {
         userId: userId,
         coverArtFile: {
