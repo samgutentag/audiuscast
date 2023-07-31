@@ -115,7 +115,9 @@ try {
             name: "my cover art",
         },
         metadata: {
-            description: data.description,
+            description: data.description
+                ? data.description.substring(0, 1000)
+                : "",
             title: data.title,
             genre: Genre.PODCASTS,
             // tags: data.tags,
