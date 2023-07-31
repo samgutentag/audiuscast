@@ -10,10 +10,17 @@ import {
 const discoveryNodeSelector = new DiscoveryNodeSelector({
     initialSelectedNode: "https://discoveryprovider.staging.audius.co/",
 });
-
-const audiusSdk = sdk({
-    appName: "AudiusCast_Staging",
-    services: {
+let appName = "AudiusCast_Staging";
+if (import.meta.env.VITE_AUDIUS_ENV === "production") {
+    appName = "AudiusCast";
+}
+let sdkConfig = {
+    appName: appName,
+    apiKey: import.meta.env.VITE_AUDIUS_API_KEY,
+    apiSecret: "",
+};
+if (import.meta.env.VITE_AUDIUS_ENV === "staging") {
+    sdkConfig.services = {
         discoveryNodeSelector,
         entityManager: new EntityManager({
             discoveryNodeSelector,
@@ -21,14 +28,11 @@ const audiusSdk = sdk({
             contractAddress: stagingConfig.entityManagerContractAddress,
             identityServiceUrl: stagingConfig.identityServiceUrl,
         }),
-    },
-    apiKey: "b6fd9c0350e052d7af5b9d2895c6481554d57999",
-    apiSecret: "",
-});
-
-audiusSdk.oauth.init({
+    };
+}
+const audiusSdk = sdk(sdkConfig);
+const oauthConfig = {
     successCallback: (res) => {
-        console.log("Log in success!", res.profilePicture);
         window.axios
             .post("/auth/login", {
                 email: res.email,
@@ -40,9 +44,11 @@ audiusSdk.oauth.init({
                 window.location.href = "/dashboard";
             });
     },
-    env: "staging",
-});
-
+};
+if (import.meta.env.VITE_AUDIUS_ENV === "staging") {
+    oauthConfig.env = "staging";
+}
+audiusSdk.oauth.init(oauthConfig);
 audiusSdk.oauth.renderButton({
     element: document.getElementById("audius-login-button"),
     scope: "write",
