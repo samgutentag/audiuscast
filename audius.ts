@@ -15,6 +15,9 @@ import { SdkConfig } from "@audius/sdk/dist/sdk/types";
 
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const apiKey = process.env.AUDIUS_API_KEY || "";
 const apiSecret = process.env.AUDIUS_API_SECRET || "";
@@ -76,7 +79,7 @@ try {
         coverArtFile: {
             buffer: imagePath
                 ? fs.readFileSync(imagePath)
-                : fs.readFileSync(`${__dirname}/default.jpg`),
+                : fs.readFileSync(path.join(__dirname, "default.jpg")),
             name: "my cover art",
         },
         metadata: {
