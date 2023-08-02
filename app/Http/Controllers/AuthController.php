@@ -18,11 +18,11 @@ class AuthController extends Controller
                     'email' => $request->email,
                     'avatar_url' => $request->avatar_url
                 ]);
+                Auth::login($user, true);
                 return response()->json([
                     'user' => $user
                 ]);
             }
-            Auth::login($user, true);
         }
         return response()->json([
             'user' => Auth::user()
