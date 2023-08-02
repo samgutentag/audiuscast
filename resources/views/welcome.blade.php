@@ -53,11 +53,9 @@
                         ones in sync, with one easy step. It's as simple as adding your
                         podcast's RSS feed and watching the tracks upload automatically</p>
                     <div class="mt-10 flex items-center gap-x-6">
-                        <a href="#"
-                            class="rounded-md bg-audius-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-audius-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-audius-600">Get
-                            started</a>
-                        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span
-                                aria-hidden="true">→</span></a>
+                        <div onclick="login()"
+                            class="cursor-pointer rounded-md bg-audius-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-audius-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-audius-600">Get
+                            started</div>
                     </div>
                 </div>
                 <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
@@ -83,7 +81,11 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+        function login() {
+            document.getElementById("audius-login-button").click()
+        }
+    </script>
 </body>
 
 </html>
