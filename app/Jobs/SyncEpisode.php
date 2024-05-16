@@ -31,6 +31,7 @@ class SyncEpisode implements ShouldQueue
     public function handle(): void
     {
         $episode = collect($this->sync->podcast->items)->firstWhere('guid', $this->sync->guid);
+        Log::info(print_r("syncing episode $episode"));
         $data = json_encode(json_encode([
             "description" =>  $episode['description'],
             "title" => $episode['title'],
