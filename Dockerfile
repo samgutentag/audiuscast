@@ -37,12 +37,16 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 COPY ./package*.json ./
 RUN npm install
 
-COPY . /var/www/html
-RUN composer install
+COPY composer.json composer.lock ./
+RUN composer install --prefer-dist --no-dev --optimize-autoloader
 
-COPY start.sh /usr/local/bin/start.sh
+COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 COPY --from=build /app/public/build /var/www/html/public/build
+
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
 EXPOSE 8000
 
