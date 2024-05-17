@@ -1,40 +1,65 @@
 version: "3.8"
 
 services:
-    mysql:
-        image: mysql:latest
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: laravel
-        ports:
-            - "3306:3306"
-        container_name: mysql
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - "3306:3306"
+    container_name: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - my_network
 
-    redis:
-        image: redis:latest
-        ports:
-            - "6379:6379"
-        container_name: redis
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    container_name: redis
+    networks:
+      - my_network
 
-    laravel:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        ports:
-            - "8000:8000"
-        depends_on:
-            - mysql
-            - redis
-        volumes:
-            - .:/var/www/html
-        container_name: laravel
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    container_name: server
+    command: bash -c start.sh
+    networks:
+      - my_network
 
-    node:
-        image: node:latest
-        working_dir: /var/www/html
-        command: sh -c "npm install && npm run dev"
-        depends_on:
-            - laravel
-        volumes:
-            - .:/var/www/html
-        container_name: node
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    container_name: queue
+    entrypoint: ''
+    command: php artisan queue:work
+    networks:
+      - my_network
+
+networks:
+  my_network:
+
+
+volumes:
+  mysql_data:

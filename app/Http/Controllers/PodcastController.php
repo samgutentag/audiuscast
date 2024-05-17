@@ -72,6 +72,7 @@ class PodcastController extends Controller
     public function destroy(Request $request)
     {
         $podcast = Auth::user()->podcast;
+        Sync::where('podcast_id', $podcast->id)->delete();
         $podcast->delete();
         return to_route('dashboard');
     }
