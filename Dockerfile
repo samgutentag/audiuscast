@@ -36,6 +36,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 
 COPY ./package*.json ./
 RUN npm install
+RUN composer install
 
 COPY . /var/www/html
 
