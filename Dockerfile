@@ -38,15 +38,13 @@ COPY ./package*.json ./
 RUN npm install
 
 COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-dev --optimize-autoloader
 
 COPY . /var/www/html
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-COPY --from=build /app/public/build /var/www/html/public/build
+RUN composer install  --prefer-dist --no-dev --optimize-autoloader
 
 COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+
+COPY --from=build /app/public/build /var/www/html/public/build
 
 EXPOSE 8000
 
