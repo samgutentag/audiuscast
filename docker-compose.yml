@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+  caddy:
+    image: caddy:2.7.4
+    container_name: caddy
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - my_network
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports:
+      - "127.0.0.1:3306:3306"
+    container_name: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - my_network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "127.0.0.1:6379:6379"
+    container_name: redis
+    networks:
+      - my_network
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    container_name: server
+    command: bash -c start.sh
+    networks:
+      - my_network
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    container_name: queue
+    entrypoint: ''
+    command: php artisan queue:work
+    networks:
+      - my_network
+
+networks:
+  my_network:
+
+
+volumes:
+  mysql_data:
+  caddy_data:
+  caddy_config:

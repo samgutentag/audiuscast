@@ -49,8 +49,8 @@ const stagingStorageNodeSelector = new StorageNodeSelector({
     auth: new AppAuth(apiKey, apiSecret),
     bootstrapNodes: [
         {
-            delegateOwnerWallet: "0x671ddce7B4E676C9467F87e4031a917b5D6f75F0",
-            endpoint: "https://usermetadata.staging.audius.co",
+            delegateOwnerWallet: "0xf7C96916bd37Ad76D4EEDd6536B81c29706C8056",
+            endpoint: "https://creatornode10.staging.audius.co",
         },
     ],
 });
