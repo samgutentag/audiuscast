@@ -7,10 +7,7 @@ COPY ./package*.json ./
 
 RUN npm install
 
-COPY resources ./resources
-COPY *.js ./
-COPY *.json ./
-COPY .env ./
+COPY . .
 
 RUN npm run build
 
