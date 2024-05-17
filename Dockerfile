@@ -40,7 +40,9 @@ RUN npm install
 COPY composer.json composer.lock ./
 
 COPY . /var/www/html
-RUN composer install  --prefer-dist --no-dev --optimize-autoloader
+
+WORKDIR /var/www/html
+RUN composer install --verbose
 
 COPY start.sh /usr/local/bin/start.sh
 
