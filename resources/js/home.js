@@ -51,4 +51,29 @@ audiusSdk.oauth.init(oauthConfig);
 audiusSdk.oauth.renderButton({
     element: document.getElementById("audius-login-button"),
     scope: "write",
+    fullWidth: true,
+    size: "large",
 });
+
+const contentDiv = document.getElementById("content-div");
+const placeholder = document.getElementById("placeholder");
+const nav = document.getElementById("nav-element");
+
+function moveDiv() {
+    if (window.innerWidth < 640) {
+        // Tailwind 'sm' breakpoint
+        if (contentDiv.parentElement !== placeholder) {
+            placeholder.appendChild(contentDiv);
+            placeholder.classList.remove("hidden-placeholder");
+        }
+    } else {
+        if (contentDiv.parentElement !== nav) {
+            // nav.insertBefore(contentDiv, nav.firstChild);
+            nav.appendChild(contentDiv, nav.firstChild);
+            placeholder.classList.add("hidden-placeholder");
+        }
+    }
+}
+
+window.addEventListener("resize", moveDiv);
+window.addEventListener("DOMContentLoaded", moveDiv);
