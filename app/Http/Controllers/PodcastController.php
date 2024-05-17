@@ -39,18 +39,22 @@ class PodcastController extends Controller
         $podcast->initial_sync_date = Carbon::parse($item['date']);
         $podcast->save();
 
-        $sync = Sync::create([
-            'user_id' => Auth::user()->id,
-            'podcast_id' => $podcast->id,
-            'title' => $item['title'],
-            'image' => $item['image'],
-            'source' => $item['source'],
-            'guid' => $item['guid'],
-            'status' => 'queued'
-        ]);
-        $sync->podcast->getFreshFeedItems();
+        // This behavior used to be here to sync the most recent
+        // episode of the podcast immediately. That is really
+        // confusing UX, so commenting out.
 
-        dispatch(new SyncEpisode($sync));
+        // $sync = Sync::create([
+        //     'user_id' => Auth::user()->id,
+        //     'podcast_id' => $podcast->id,
+        //     'title' => $item['title'],
+        //     'image' => $item['image'],
+        //     'source' => $item['source'],
+        //     'guid' => $item['guid'],
+        //     'status' => 'queued'
+        // ]);
+        // $sync->podcast->getFreshFeedItems();
+
+        // dispatch(new SyncEpisode($sync));
 
         return to_route('dashboard');
     }
@@ -72,6 +76,7 @@ class PodcastController extends Controller
     public function destroy(Request $request)
     {
         $podcast = Auth::user()->podcast;
+        Sync::where('podcast_id', $podcast->id)->delete();
         $podcast->delete();
         return to_route('dashboard');
     }
