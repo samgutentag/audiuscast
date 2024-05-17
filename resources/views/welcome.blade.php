@@ -13,19 +13,21 @@
 <body class="antialiased">
     <div class="bg-white">
         <header class="absolute inset-x-0 top-0 z-50">
-            <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-                <div class="flex lg:flex-1">
-                    <a href="#" class="-m-1.5 p-1.5 flex items-center">
-                        <img src="https://thegivingblock.com/wp-content/uploads/2021/11/AudiusCoinLogo_2x.png"
-                            class="h-10 mr-2">
-                        <span class="font-bold inline-block text-2xl">AudiusCast</span>
-                    </a>
-                </div>
-
-                <div class="flex flex-1 justify-end">
-                    <div id="audius-login-button"></div>
-                </div>
-            </nav>
+            <div class="container mx-auto p-4">
+                <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global" id="nav-element">
+                    <div class="nav-item flex lg:flex-1">
+                        <a href="#" class="-m-1.5 p-1.5 flex items-center">
+                            <img src="https://thegivingblock.com/wp-content/uploads/2021/11/AudiusCoinLogo_2x.png"
+                                class="h-10 mr-2">
+                            <span class="font-bold inline-block text-2xl">AudiusCast</span>
+                        </a>
+                    </div>
+                    <div class="content-div flex flex-1 justify-center md:justify-end lg:justify-end" id="content-div">
+                        <div id="audius-login-button"></div>
+                    </div>
+                </nav>
+                <div id="placeholder" class="hidden-placeholder"></div>
+            </div>
         </header>
 
         <div class="relative isolate pt-14">
@@ -45,7 +47,7 @@
                 <rect width="100%" height="100%" stroke-width="0" fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)">
                 </rect>
             </svg>
-            <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
+            <div class="mx-auto max-w-7xl px-6 py-12 sm:py-20 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
                 <div class="mx-auto max-w-2xl lg:mx-0 lg:flex-auto">
                     <h1 class="mt-10 max-w-lg text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Sync your
                         podcast with Audius</h1>
