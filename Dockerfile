@@ -1,18 +1,3 @@
-# Stage 1: Build React App with Vite
-FROM node:18 as build
-
-WORKDIR /app
-
-COPY ./package*.json ./
-
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-
-# Stage 2: Laravel build
 FROM php:8.2-apache
 
 WORKDIR /var/www/html
@@ -31,19 +16,17 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
   apt-get install -y nodejs
 
-COPY ./package*.json ./
+COPY ./package*.json /var/www/html
 RUN npm install
-
-COPY composer.json composer.lock ./
 
 COPY . /var/www/html
 
-WORKDIR /var/www/html
 RUN composer install --verbose
 
-COPY start.sh /usr/local/bin/start.sh
+WORKDIR /var/www/html
+RUN npm run build
 
-COPY --from=build /app/public/build /var/www/html/public/build
+COPY start.sh /usr/local/bin/start.sh
 
 EXPOSE 8000
 
