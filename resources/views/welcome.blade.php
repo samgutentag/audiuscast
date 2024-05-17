@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AudiusCast</title>
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <link rel="shortcut icon" href="https://audius.co/favicons/favicon.ico" />
     @vite(['resources/css/app.css', 'resources/js/home.js'])
 </head>
 
