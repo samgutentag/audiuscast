@@ -1,5 +1,6 @@
-{$APP_URL}
+https://audiuscast.live, https://audiuscast.com {
+    encode zstd gzip
 
-encode zstd gzip
+    reverse_proxy server:8000
+}
 
-reverse_proxy server:8000
