@@ -67,7 +67,7 @@ services:
       - .env
     container_name: queue
     entrypoint: ''
-    command: php artisan queue:work
+    command: php -d memory_limit=2G artisan queue:work
     networks:
       - my_network
 
